@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkHive | Login</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body class="relative min-h-screen flex flex-col items-center justify-center p-4 font-[Poppins] pt-28">
+
+    <header
+        class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-black/20 backdrop-blur-md border-b border-white/10 w-full">
+
+        <span class="text-white text-2xl font-bold tracking-wide">
+            Work<span class="text-[#FCB800]">Hive</span>
+        </span>
+
+         <a 
+            href="homepage.html" 
+            class="flex items-center gap-2 bg-[#FCB800] hover:bg-[#e0a400] text-gray-900 font-semibold px-4 py-2 rounded-lg transition-all duration-200 shadow-md text-sm">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a> 
+    </header>
+
+    <video autoplay loop muted playsinline preload="auto" disablepictureinpicture
+        class="fixed inset-0 w-full h-full object-cover z-0">
+        <source src="img/livebackground.mp4" type="video/mp4">
+    </video>
+
+    <div
+        class="relative z-10 flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden my-auto">
+
+        <div
+            class="hidden md:flex flex-col items-center justify-center w-1/2 bg-[#FCB800] p-8 text-center text-gray-900">
+            <img class="log w-24 h-24 object-contain mb-4 rounded-full" src="./img/logo.png">
+
+            <h1 class="text-3xl font-bold mb-3">
+                Workhive
+            </h1>
+
+            <p class="max-w-xs text-sm text-gray-800">
+                “Choose a job you love, and you will never have to work a day in your life.”
+                <br><br>
+                — Confucius
+            </p>
+        </div>
+
+        <div class="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-8">
+            <div class="w-full max-w-sm">
+
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">
+                    Sign In
+                </h2>
+
+                <p class="text-gray-500 mb-5 text-sm">
+                    Welcome Please login.
+                </p>
+
+                <form id="loginForm" class="space-y-4">
+
+                    <div
+                        class="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:border-[#FCB800]">
+                        <i class="fa-solid fa-user text-gray-400 mr-3 text-sm"></i>
+
+                        <input type="text" id="username" placeholder="Email or Username"
+                            class="w-full bg-transparent focus:outline-none text-sm">
+                    </div>
+
+                    <div
+                        class="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:border-[#FCB800]">
+                        <i class="fa-solid fa-lock text-gray-400 mr-3 text-sm"></i>
+
+                        <input type="password" id="password" placeholder="Password"
+                            class="w-full bg-transparent focus:outline-none text-sm">
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <input type="checkbox" id="showPassword" class="accent-[#FCB800]">
+
+                        <label for="showPassword">
+                            Show Password
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-[#FCB800] hover:bg-[#e0a400] text-gray-900 font-bold py-2.5 rounded-lg transition">
+                        Login
+                    </button>
+
+                </form>
+
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Don’t have an account?
+
+                    <a href="sign.html" class="text-[#FCB800] font-semibold hover:underline">
+                        Sign Up
+                    </a>
+                </p>
+
+                <p id="message" class="mt-3 text-sm text-center"></p>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkHive | Employer Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class' };
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="font-[Poppins] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors">
+
+<div class="flex h-screen overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed md:static z-40 -translate-x-full md:translate-x-0 transition-transform duration-200 w-64 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+    <div class="flex items-center gap-2 px-5 py-5 border-b border-gray-200 dark:border-gray-700">
+      <img src="img/logo.png" class="w-9 h-9 rounded-full object-contain" alt="WorkHive">
+      <div>
+        <p class="font-bold leading-tight">WorkHive</p>
+        <p class="text-[11px] text-gray-500 dark:text-gray-400">Employer</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <a href="#" data-label="Overview" onclick="switchTab(event,'overview')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#FCB800] text-gray-900 shadow-sm text-sm font-medium">
+        <i class="fa-solid fa-gauge w-4"></i> Overview
+      </a>
+      <a href="#" data-label="Post a Job" onclick="switchTab(event,'post')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
+        <i class="fa-solid fa-circle-plus w-4"></i> Post a Job
+      </a>
+      <a href="#" data-label="My Job Postings" onclick="switchTab(event,'postings')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
+        <i class="fa-solid fa-briefcase w-4"></i> My Job Postings
+      </a>
+      <a href="#" data-label="Applicants" onclick="switchTab(event,'applicants')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
+        <i class="fa-solid fa-users w-4"></i> Applicants
+      </a>
+      <a href="#" data-label="Company Profile" onclick="switchTab(event,'company')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
+        <i class="fa-regular fa-building w-4"></i> Company Profile
+      </a>
+    </nav>
+
+    <div class="px-3 py-4 border-t border-gray-200 dark:border-gray-700">
+      <a href="#logout" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium">
+        <i class="fa-solid fa-right-from-bracket w-4"></i> Logout
+      </a>
+    </div>
+  </aside>
+
+  <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/30 z-30 hidden md:hidden"></div>
+
+  <!-- Main -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <header class="flex items-center justify-between px-4 md:px-6 py-3.5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="md:hidden text-gray-600 dark:text-gray-300"><i class="fa-solid fa-bars text-lg"></i></button>
+        <h1 id="pageTitle" class="font-semibold text-base md:text-lg">Overview</h1>
+      </div>
+      <div class="flex items-center gap-3 md:gap-4">
+        <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+          <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-[#FCB800] flex items-center justify-center text-gray-900 font-semibold text-sm" id="userInitial">E</div>
+          <span id="userNameLabel" class="text-sm font-medium hidden sm:inline">Employer</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+
+      <!-- OVERVIEW -->
+      <section id="tab-overview" class="tab-content space-y-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400">Active Job Posts</p>
+            <p id="statActive" class="text-2xl font-bold mt-1">0</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400">Total Applicants</p>
+            <p id="statApplicants" class="text-2xl font-bold mt-1">0</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400">New This Week</p>
+            <p id="statNew" class="text-2xl font-bold mt-1">0</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400">Hired</p>
+            <p id="statHired" class="text-2xl font-bold mt-1">0</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-sm font-semibold">Your job postings</p>
+            <a href="#" onclick="switchTab(event,'post')" class="text-xs font-semibold text-[#FCB800] hover:underline">+ Post a job</a>
+          </div>
+          <div id="overviewPostings" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- POST A JOB -->
+      <section id="tab-post" class="tab-content hidden">
+        <form id="postJobForm" class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 space-y-4 max-w-xl">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Job title</label>
+            <input id="pj_title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Location</label>
+              <input id="pj_location" type="text" required class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Job type</label>
+              <select id="pj_type" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Contract</option>
+                <option>Remote</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Salary range</label>
+            <input id="pj_salary" type="text" placeholder="e.g. ₱30,000 - ₱40,000" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Required skills (comma separated)</label>
+            <input id="pj_skills" type="text" placeholder="e.g. Excel, Communication" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Job description</label>
+            <textarea id="pj_description" rows="4" required class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]"></textarea>
+          </div>
+          <button type="submit" class="bg-[#FCB800] hover:bg-[#e0a400] text-gray-900 font-bold text-sm py-2 px-5 rounded-lg transition">Publish Job</button>
+          <span id="postJobMsg" class="hidden text-sm text-green-600 ml-3">Posted ✓</span>
+        </form>
+      </section>
+
+      <!-- MY JOB POSTINGS -->
+      <section id="tab-postings" class="tab-content hidden space-y-3">
+        <div id="postingsList" class="space-y-3"></div>
+        <p id="noPostings" class="hidden text-center text-sm text-gray-500 dark:text-gray-400 py-8">You haven't posted any jobs yet.</p>
+      </section>
+
+      <!-- APPLICANTS -->
+      <section id="tab-applicants" class="tab-content hidden space-y-4">
+        <select id="applicantsJobFilter" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800">
+          <option value="">All job postings</option>
+        </select>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-700/50 text-left text-gray-500 dark:text-gray-400">
+              <tr>
+                <th class="px-4 py-3 font-medium">Applicant</th>
+                <th class="px-4 py-3 font-medium">Applied For</th>
+                <th class="px-4 py-3 font-medium">Date</th>
+                <th class="px-4 py-3 font-medium">Status</th>
+                <th class="px-4 py-3 font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody id="applicantsTable" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+          </table>
+          <p id="noApplicants" class="hidden text-center text-sm text-gray-500 dark:text-gray-400 py-8">No applicants yet.</p>
+        </div>
+      </section>
+
+      <!-- COMPANY PROFILE -->
+      <section id="tab-company" class="tab-content hidden">
+        <form id="companyForm" class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 space-y-4 max-w-xl">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Company name</label>
+            <input id="cp_name" type="text" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Industry</label>
+            <input id="cp_industry" type="text" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Location</label>
+            <input id="cp_location" type="text" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">About the company</label>
+            <textarea id="cp_about" rows="4" class="w-full border border-gray-300 dark:border-gray-600 bg-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FCB800]"></textarea>
+          </div>
+          <button type="submit" class="bg-[#FCB800] hover:bg-[#e0a400] text-gray-900 font-bold text-sm py-2 px-5 rounded-lg transition">Save Company Profile</button>
+          <span id="companySavedMsg" class="hidden text-sm text-green-600 ml-3">Saved ✓</span>
+        </form>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Logout confirm modal -->
+<div id="logoutModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4 flex">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-sm text-center">
+    <div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-3">
+      <i class="fa-solid fa-right-from-bracket text-xl"></i>
+    </div>
+    <h3 class="text-base font-bold mb-1">Log out?</h3>
+    <p class="text-xs text-gray-500 dark:text-gray-400 mb-5">You'll need to sign in again to access your dashboard.</p>
+    <div class="flex gap-2">
+      <button id="cancelLogoutBtn" class="w-1/2 border border-gray-300 dark:border-gray-600 font-semibold py-2 rounded-lg text-xs">Cancel</button>
+      <button id="confirmLogoutBtn" class="w-1/2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg text-xs">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script src="dashboard-common.js"></script>
+<script src="employer-dashboard.js"></script>
+</body>
+</html>

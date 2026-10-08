@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkHive | Official Job Portal</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="brand-container">
+            <img src="img/logo.png" alt="WorkHive Logo" class="site-logo">
+            <div class="brand-text">
+                <h1>WorkHive</h1>
+            </div>
+        </a>
+            <nav>
+                <a href="#" class="nav-home-link">Home</a>
+                <a href="#jobs">Browse Jobs</a>
+                <a href="#about" onclick="highlightAbout()">About Us</a>
+            </nav>
+        <div>
+            <a href="index.html" class="btn-signin" id="headerAuthBtn">Get started</a>
+        </div>
+    </header>
+
+    <section class="banner">
+        <video class="bg-video" autoplay loop muted playsinline>
+            <source src="img/livebackground.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+        <div class="banner-overlay"></div>
+        
+        <div class="banner-content">
+            <h2>Find Your Dream Career Today</h2>
+            <p>"Choose a job you love, and you will never have to work a day in your life." — Confucius</p>
+            <form class="hero-search" id="heroSearchForm">
+                <input type="text" id="heroSearchInput" placeholder="Search job title, company or location...">
+                <button type="submit">Search</button>
+            </form>
+            <div class="hero-stats">
+                <div><b id="statJobs">–</b><span>Open Jobs</span></div>
+                <div><b id="statCompanies">–</b><span>Hiring Companies</span></div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="section-container" id="jobs">
+        <h3>Featured Career Openings</h3>
+        
+        <p class="jobs-subtitle" id="jobsSubtitle">Loading the latest openings from WorkHive...</p>
+        <div class="job-grid" id="homeJobsList">
+            <div class="job-card skeleton"></div>
+            <div class="job-card skeleton"></div>
+            <div class="job-card skeleton"></div>
+        </div>
+    </section>
+
+    <section class="section-container" id="about">
+        <h3>About WorkHive</h3>
+        <div class="about-content">
+            <p>WorkHive connects elite professionals with top-tier companies seamlessly and efficiently. Our mission is to bridge the gap between talented individuals and organizations looking to scale with quality talent.</p>
+            <a href="sign.html" class="btn-cta">Join Our Platform</a>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>&copy; 2026 WorkHive. All rights reserved.</p>
+        <p>Connecting talent with opportunity.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="homepage.js"></script>
+</body>
+</html>

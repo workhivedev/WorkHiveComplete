@@ -1,0 +1,22 @@
+body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+.bg-vid{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.role-card:has(input[type="radio"]:checked) {
+    border-color: #FCB800 !important;
+    background-color: #FFFDF0;
+}
+
+.log {
+
+width: 125px;
+height: 125px;
+}

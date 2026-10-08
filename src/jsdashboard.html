@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkHive - Employer Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="text-xl font-bold text-emerald-600">WorkHive</span>
+            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">Employer Portal</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="text-sm font-medium text-gray-700">Company: TechCorp Inc.</span>
+            <button onclick="logout()" class="text-sm text-red-600 hover:text-red-800 font-medium">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border h-fit space-y-2">
+            <button onclick="switchTab('postJob')" id="btn-postJob" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-700 transition">Post a Job</button>
+            <button onclick="switchTab('manageJobs')" id="btn-manageJobs" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition">Active Job Listings</button>
+            <button onclick="switchTab('applicants')" id="btn-applicants" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition">View Applicants</button>
+        </div>
+
+        <!-- Dynamic Content Area -->
+        <div class="md:col-span-3 space-y-6">
+            
+            <!-- TAB 1: Post a Job -->
+            <div id="tab-postJob" class="dashboard-tab bg-white p-6 rounded-xl shadow-sm border space-y-4">
+                <h2 class="text-lg font-bold text-gray-800">Create New Job Listing</h2>
+                <form id="createJobForm" onsubmit="handlePostJob(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Job Title</label>
+                            <input type="text" id="jobTitle" class="mt-1 w-full border rounded-lg px-3 py-2 text-sm" placeholder="e.g. Senior Frontend Dev" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Location</label>
+                            <input type="text" id="jobLocation" class="mt-1 w-full border rounded-lg px-3 py-2 text-sm" placeholder="e.g. Remote / Austin, TX" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Employment Type</label>
+                            <select id="jobType" class="mt-1 w-full border rounded-lg px-3 py-2 text-sm bg-white">
+                                <option>Full-time</option>
+                                <option>Part-time</option>
+                                <option>Contract</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Salary Range</label>
+                            <input type="text" id="jobSalary" class="mt-1 w-full border rounded-lg px-3 py-2 text-sm" placeholder="e.g. $100k - $120k" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Job Description</label>
+                        <textarea id="jobDesc" rows="4" class="mt-1 w-full border rounded-lg px-3 py-2 text-sm" placeholder="Describe the role requirements and duties..." required></textarea>
+                    </div>
+                    <button type="submit" class="bg-emerald-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700">Publish Job Listing</button>
+                </form>
+            </div>
+
+            <!-- TAB 2: Manage Listings -->
+            <div id="tab-manageJobs" class="dashboard-tab hidden space-y-4">
+                <h2 class="text-lg font-bold text-gray-800">Your Active Job Postings</h2>
+                <div id="employerJobListings" class="grid grid-cols-1 gap-4">
+                    <!-- Dynamic Listings Injected Here -->
+                </div>
+            </div>
+
+            <!-- TAB 3: View Applicants -->
+            <div id="tab-applicants" class="dashboard-tab hidden space-y-4">
+                <h2 class="text-lg font-bold text-gray-800">Candidate Applications</h2>
+                <div id="applicantsContainer" class="bg-white rounded-xl shadow-sm border divide-y">
+                    <!-- Dynamic Applicants Injected Here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Mock Employer State Data
+        let employerJobs = [
+            { id: 101, title: "Full Stack Engineer", location: "Remote", type: "Full-time", salary: "$110k - $130k", desc: "Build scalable web applications." },
+            { id: 102, title: "Product Manager", location: "New York, NY", type: "Full-time", salary: "$130k - $150k", desc: "Lead product development roadmaps." }
+        ];
+
+        let applicants = [
+            { id: 1, name: "Alex Johnson", role: "Full Stack Engineer", email: "alex@example.com", status: "Under Review" },
+            { id: 2, name: "Sarah Smith", role: "Product Manager", email: "sarah@example.com", status: "Shortlisted" }
+        ];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.dashboard-tab').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('[id^="btn-"]').forEach(el => {
+                el.classList.remove('bg-emerald-50', 'text-emerald-700');
+                el.classList.add('text-gray-600', 'hover:bg-gray-50');
+            });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.add('bg-emerald-50', 'text-emerald-700');
+            activeBtn.classList.remove('text-gray-600', 'hover:bg-gray-50');
+
+            if (tabId === 'manageJobs') renderEmployerJobs();
+            if (tabId === 'applicants') renderApplicants();
+        }
+
+        function handlePostJob(e) {
+            e.preventDefault();
+            const newJob = {
+                id: Date.now(),
+                title: document.getElementById('jobTitle').value,
+                location: document.getElementById('jobLocation').value,
+                type: document.getElementById('jobType').value,
+                salary: document.getElementById('jobSalary').value,
+                desc: document.getElementById('jobDesc').value
+            };
+            employerJobs.push(newJob);
+            document.getElementById('createJobForm').reset();
+            alert("Job posted successfully!");
+            switchTab('manageJobs');
+        }
+
+        function renderEmployerJobs() {
+            const container = document.getElementById('employerJobListings');
+            container.innerHTML = employerJobs.length === 0 ? '<p class="text-sm text-gray-500">No active job posts.</p>' : '';
+            employerJobs.forEach(job => {
+                container.innerHTML += `
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-gray-900">${job.title}</h3>
+                            <p class="text-sm text-gray-600">${job.location} • ${job.type} • <span class="text-emerald-600 font-medium">${job.salary}</span></p>
+                        </div>
+                        <button onclick="deleteJob(${job.id})" class="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteJob(id) {
+            employerJobs = employerJobs.filter(j => j.id !== id);
+            renderEmployerJobs();
+        }
+
+        function renderApplicants() {
+            const container = document.getElementById('applicantsContainer');
+            container.innerHTML = applicants.length === 0 ? '<div class="p-4 text-sm text-gray-500">No applicants yet.</div>' : '';
+            applicants.forEach(app => {
+                container.innerHTML += `
+                    <div class="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">${app.name}</h4>
+                            <p class="text-xs text-gray-500">Applied for: <span class="font-medium text-gray-700">${app.role}</span> • Email: ${app.email}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-gray-100 font-medium text-gray-700">${app.status}</span>
+                            <button onclick="updateStatus(${app.id}, 'Shortlisted')" class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-md font-medium hover:bg-emerald-100">Shortlist</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateStatus(id, newStatus) {
+            const app = applicants.find(a => a.id === id);
+            if(app) {
+                app.status = newStatus;
+                renderApplicants();
+                alert(`Applicant status updated to ${newStatus}`);
+            }
+        }
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

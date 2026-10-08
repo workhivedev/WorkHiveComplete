@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkHive | Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FCB800; border-radius: 99px; }
+
+        .nav-item { position: relative; overflow: hidden; }
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0;
+            width: 3px; height: 100%;
+            background: #FCB800;
+            border-radius: 0 4px 4px 0;
+            transform: scaleY(0);
+            transition: transform .2s ease;
+        }
+        .nav-item.active-nav::before { transform: scaleY(1); }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.1); }
+        .stat-card .glow {
+            position: absolute;
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .18;
+            right: -20px; top: -20px;
+        }
+
+        .table-row { transition: background .15s ease; }
+        .table-row:hover { background: #fffbf0 !important; }
+        .dark .table-row:hover { background: rgba(252,184,0,.05) !important; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 10px;
+            font-size: 13px; font-weight: 500;
+            color: #6b7280;
+            transition: all .18s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .sidebar-link:hover { background: #fef9ec; color: #1f2937; }
+        .dark .sidebar-link:hover { background: rgba(252,184,0,.08); color: #f9fafb; }
+        .sidebar-link.is-active { background: #FCB800; color: #111827; font-weight: 600; }
+        .sidebar-link.is-active .link-icon { color: #111827; }
+
+        .badge-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+            margin-right: 4px;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+
+        .chart-bar {
+            display: flex; align-items: flex-end;
+            gap: 6px; height: 80px;
+        }
+        .chart-bar .bar {
+            flex: 1; border-radius: 4px 4px 0 0;
+            background: #FCB800;
+            opacity: .7;
+            transition: opacity .2s;
+            min-width: 12px;
+        }
+        .chart-bar .bar:hover { opacity: 1; }
+
+        .tab-content { animation: fadeUp .22s ease; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pill-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 99px;
+            font-size: 11px; font-weight: 600; letter-spacing: .3px;
+        }
+
+        .select-status {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 22px !important;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+            background-size: 400% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        .action-btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 11px; border-radius: 7px;
+            font-size: 11px; font-weight: 600;
+            border: 1.5px solid transparent;
+            cursor: pointer; transition: all .15s ease;
+        }
+        .action-btn-ban { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+        .action-btn-ban:hover { background: #ffedd5; }
+        .action-btn-block { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+        .action-btn-block:hover { background: #e2e8f0; }
+        .action-btn-unblock { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .action-btn-unblock:hover { background: #dcfce7; }
+        .action-btn-delete { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+        .action-btn-delete:hover { background: #fee2e2; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 flex h-screen overflow-hidden transition-colors duration-200">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside id="sidebar" class="w-60 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col z-20 transition-all duration-200 hidden md:flex">
+
+        <!-- Brand -->
+        <div class="h-16 flex items-center gap-3 px-5 border-b border-gray-100 dark:border-gray-800 bg-[#FCB800]">
+            <img src="img/logo.png" onerror="this.src='https://via.placeholder.com/36/FCB800/111?text=WH'" class="w-9 h-9 rounded-full bg-white p-1 shadow object-contain" alt="logo">
+            <div>
+                <div class="font-bold text-gray-900 text-base leading-tight">WorkHive</div>
+                <div class="text-[9px] font-semibold tracking-widest text-gray-800 uppercase">Admin Portal</div>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto" id="sidebarNav">
+            <div class="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600 px-3 mb-3">Main Menu</div>
+
+            <a onclick="switchTab(event,'overview')" class="sidebar-link nav-item is-active" data-tab="overview">
+                <i class="link-icon fa-solid fa-gauge-high w-4 text-center text-sm"></i>
+                <span>Overview</span>
+            </a>
+            <a onclick="switchTab(event,'jobs')" class="sidebar-link nav-item" data-tab="jobs">
+                <i class="link-icon fa-solid fa-briefcase w-4 text-center text-sm"></i>
+                <span>Job Listings</span>
+            </a>
+            <a onclick="switchTab(event,'applications')" class="sidebar-link nav-item" data-tab="applications">
+                <i class="link-icon fa-solid fa-file-lines w-4 text-center text-sm"></i>
+                <span>Applications</span>
+                <span id="appsBadge" class="ml-auto text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full hidden"></span>
+            </a>
+
+            <div class="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600 px-3 mt-5 mb-3">User Management</div>
+
+            <a onclick="switchTab(event,'messages')" class="sidebar-link nav-item" data-tab="messages">
+                <i class="link-icon fa-solid fa-user-graduate w-4 text-center text-sm"></i>
+                <span>Job Seekers</span>
+            </a>
+            <a onclick="switchTab(event,'employers')" class="sidebar-link nav-item" data-tab="employers">
+                <i class="link-icon fa-solid fa-building w-4 text-center text-sm"></i>
+                <span>Employers</span>
+            </a>
+
+            <div class="mt-5 border-t border-gray-100 dark:border-gray-800 pt-4">
+                <a href="#logout" class="sidebar-link text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600">
+                    <i class="fa-solid fa-right-from-bracket w-4 text-center text-sm"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- User card -->
+        <div class="p-4 border-t border-gray-100 dark:border-gray-800">
+            <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800 rounded-xl px-3 py-2.5">
+                <div id="userInitial" class="w-8 h-8 rounded-full bg-[#FCB800] flex items-center justify-center font-bold text-gray-900 text-xs shadow-sm flex-shrink-0">AD</div>
+                <div class="overflow-hidden">
+                    <div class="text-xs font-bold text-gray-900 dark:text-gray-100 truncate">Administrator</div>
+                    <div id="userEmail" class="text-[10px] text-gray-500 dark:text-gray-400 truncate">workhive.com</div>
+                </div>
+                <div class="ml-auto"><span class="badge-dot"></span></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+        <!-- Topbar -->
+        <header class="h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center px-6 gap-4 z-10">
+            <div class="relative flex-1 max-w-xs">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                <input id="adminSearch" type="text" placeholder="Search anything..."
+                    class="w-full bg-gray-50 dark:bg-gray-800 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-[#FCB800] transition placeholder-gray-400">
+            </div>
+
+            <div class="flex items-center gap-2 ml-auto">
+                <!-- Refresh -->
+                <button onclick="loadAdminData()" title="Refresh data"
+                    class="p-2.5 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+
+                <!-- Dark mode -->
+                <button id="themeToggleBtn" onclick="toggleDarkMode()"
+                    class="p-2.5 rounded-xl text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">
+                    <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Notification bell -->
+                <button class="relative p-2.5 rounded-xl text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FCB800] rounded-full border-2 border-white dark:border-gray-900"></span>
+                </button>
+
+                <!-- Date chip -->
+                <div class="hidden md:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2">
+                    <i class="fa-regular fa-calendar text-[#FCB800] text-xs"></i>
+                    <span id="currentDate" class="text-xs text-gray-600 dark:text-gray-300 font-medium"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+            <!-- ======= OVERVIEW TAB ======= -->
+            <section id="tab-overview" class="tab-content space-y-6">
+
+                <!-- Welcome banner -->
+                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FCB800] via-[#f59e0b] to-[#d97706] p-6 text-gray-900">
+                    <div class="relative z-10">
+                        <div class="text-xs font-semibold uppercase tracking-widest opacity-70 mb-1">Admin Dashboard</div>
+                        <h1 class="text-2xl font-bold mb-1">Good day, Admin 👋</h1>
+                        <p class="text-sm opacity-80 max-w-md">Here's a live snapshot of WorkHive activity. Review applications, manage users, and keep the platform running smoothly.</p>
+                    </div>
+                    <div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-10 text-[120px] pointer-events-none select-none">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <!-- Decorative blobs -->
+                    <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+                    <div class="absolute -top-4 left-40 w-20 h-20 bg-white/15 rounded-full blur-xl"></div>
+                </div>
+
+                <!-- Stat cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+                    <div class="stat-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+                        <div class="glow bg-amber-400"></div>
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center">
+                                <i class="fa-solid fa-briefcase text-[#FCB800] text-base"></i>
+                            </div>
+                            <span class="text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">Active</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="statActiveJobs">—</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Active Jobs</div>
+                        <div class="mt-3 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-400 rounded-full" style="width:65%"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+                        <div class="glow bg-blue-400"></div>
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                                <i class="fa-solid fa-users text-blue-500 text-base"></i>
+                            </div>
+                            <span class="text-[10px] font-semibold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Total</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="statTotalApplicants">—</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Total Applicants</div>
+                        <div class="mt-3 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-400 rounded-full" style="width:80%"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+                        <div class="glow bg-purple-400"></div>
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center">
+                                <i class="fa-solid fa-star text-purple-500 text-base"></i>
+                            </div>
+                            <span class="text-[10px] font-semibold bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-0.5 rounded-full">Pipeline</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="statShortlisted">—</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Shortlisted</div>
+                        <div class="mt-3 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-400 rounded-full" style="width:45%"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+                        <div class="glow bg-emerald-400"></div>
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
+                                <i class="fa-solid fa-calendar-check text-emerald-500 text-base"></i>
+                            </div>
+                            <span class="text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">Scheduled</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="statInterviews">—</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Interviews</div>
+                        <div class="mt-3 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-400 rounded-full" style="width:30%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity + Quick Stats row -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+                    <!-- Recent candidates (takes 2 cols) -->
+                    <div class="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                            <div>
+                                <div class="text-sm font-bold text-gray-900 dark:text-white">Recent Applications</div>
+                                <div class="text-[10px] text-gray-400 mt-0.5">Latest candidate activity across all jobs</div>
+                            </div>
+                            <a onclick="switchTab(event,'applications')" class="text-[11px] font-semibold text-[#FCB800] hover:underline cursor-pointer">View all →</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="bg-gray-50 dark:bg-gray-800/50">
+                                        <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Candidate</th>
+                                        <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Role Applied</th>
+                                        <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Date</th>
+                                        <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-right">Update</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="overviewCandidatesBody">
+                                    <tr><td colspan="5" class="px-5 py-8 text-center text-gray-400 text-xs">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Platform summary -->
+                    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 flex flex-col gap-4">
+                        <div class="text-sm font-bold text-gray-900 dark:text-white">Platform Summary</div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                    <span class="w-2 h-2 rounded-full bg-[#FCB800]"></span>Job Seekers
+                                </div>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white" id="summaryJobSeekers">—</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                    <span class="w-2 h-2 rounded-full bg-blue-400"></span>Employers
+                                </div>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white" id="summaryEmployers">—</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Total Jobs Posted
+                                </div>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white" id="summaryJobs">—</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                    <span class="w-2 h-2 rounded-full bg-purple-400"></span>Accepted Applicants
+                                </div>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white" id="summaryAccepted">—</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini bar chart -->
+                        <div class="mt-auto">
+                            <div class="text-[10px] text-gray-400 mb-2 font-medium">Application Status Breakdown</div>
+                            <div class="chart-bar" id="adminMiniChart">
+                                <div class="bar" style="height:60%;background:#FCB800" title="Pending"></div>
+                                <div class="bar" style="height:80%;background:#60a5fa" title="Shortlisted"></div>
+                                <div class="bar" style="height:40%;background:#a78bfa" title="Interview"></div>
+                                <div class="bar" style="height:55%;background:#34d399" title="Accepted"></div>
+                                <div class="bar" style="height:30%;background:#f87171" title="Rejected"></div>
+                            </div>
+                            <div class="flex justify-between text-[9px] text-gray-400 mt-1">
+                                <span>Pending</span><span>Short</span><span>Interview</span><span>Hired</span><span>Rejected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======= JOBS TAB ======= -->
+            <section id="tab-jobs" class="tab-content space-y-4 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Job Listings</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">All jobs posted on the platform</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input id="jobsTabSearch" type="text" placeholder="Search jobs..."
+                                class="bg-white dark:bg-gray-900 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-[#FCB800] w-48 transition">
+                        </div>
+                    </div>
+                </div>
+                <div id="adminJobsList" class="space-y-3"></div>
+            </section>
+
+            <!-- ======= APPLICATIONS TAB ======= -->
+            <section id="tab-applications" class="tab-content space-y-4 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Applications</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Review and update all candidate statuses</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="appStatusFilter" class="text-xs border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#FCB800]">
+                            <option value="">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="shortlisted">Shortlisted</option>
+                            <option value="interview">Interview</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-800/50">
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Candidate</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Role</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Applied</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applicationsBody">
+                                <tr><td colspan="5" class="px-5 py-8 text-center text-gray-400">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======= JOB SEEKERS TAB ======= -->
+            <section id="tab-messages" class="tab-content space-y-4 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Job Seekers</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage all registered job seekers</p>
+                    </div>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input id="jobSeekersSearch" type="text" placeholder="Search job seekers..."
+                            class="bg-white dark:bg-gray-900 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-[#FCB800] w-52 transition">
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-800/50">
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">User</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Skills</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Joined</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobSeekersBody">
+                                <tr><td colspan="5" class="px-5 py-8 text-center text-gray-400">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======= EMPLOYERS TAB ======= -->
+            <section id="tab-employers" class="tab-content space-y-4 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Employers</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage all registered employers</p>
+                    </div>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input id="employersSearch" type="text" placeholder="Search employers..."
+                            class="bg-white dark:bg-gray-900 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-[#FCB800] w-52 transition">
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-800/50">
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Employer</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Company</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Joined</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-5 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employersBody">
+                                <tr><td colspan="5" class="px-5 py-8 text-center text-gray-400">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl border border-gray-100 dark:border-gray-800 text-center space-y-4">
+            <div class="w-14 h-14 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Sign out of WorkHive?</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Your session will end and you'll be redirected to the login page.</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeLogoutModal()" class="flex-1 py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    Stay
+                </button>
+                <button onclick="executeLogout()" class="flex-1 py-2.5 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-semibold transition">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script>
+        // Date display
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+        // Tab switching — enhanced
+        function switchTab(event, tabId) {
+            if (event) event.preventDefault();
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-link').forEach(l => {
+                l.classList.remove('is-active');
+            });
+            const active = document.getElementById('tab-' + tabId);
+            if (active) active.classList.remove('hidden');
+            const navLink = document.querySelector('.sidebar-link[data-tab="' + tabId + '"]');
+            if (navLink) navLink.classList.add('is-active');
+        }
+
+        // Status filter for applications tab
+        document.getElementById('appStatusFilter')?.addEventListener('change', function () {
+            const val = this.value.toLowerCase();
+            document.querySelectorAll('#applicationsBody tr[data-searchable]').forEach(row => {
+                row.style.display = (!val || row.dataset.status === val) ? '' : 'none';
+            });
+        });
+
+        // Jobs tab live search
+        document.getElementById('jobsTabSearch')?.addEventListener('input', function () {
+            const t = this.value.toLowerCase();
+            document.querySelectorAll('#adminJobsList [data-searchable]').forEach(el => {
+                el.style.display = el.innerText.toLowerCase().includes(t) ? '' : 'none';
+            });
+        });
+    </script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

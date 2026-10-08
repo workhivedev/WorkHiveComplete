@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkHive | Sign Up</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+
+<body class="relative min-h-screen flex flex-col justify-between">
+
+ 
+    <header class="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-black/20 backdrop-blur-md border-b border-white/10 w-full">
+
+         <span class="text-white text-2xl font-bold tracking-wide">
+            Work<span class="text-[#FCB800]">Hive</span>
+        </span>
+        
+    </header>
+
+
+
+
+    <video
+        autoplay
+        loop
+        muted
+        preload="auto"
+        disablepictureinpicture
+        class="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
+    >
+        <source src="img/livebackground.mp4" type="video/mp4">
+    </video>
+
+   
+    <main class="flex-grow flex items-center justify-center p-4 z-10">
+        <div class="container flex flex-col md:flex-row w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden my-8">
+
+            <div id="errorModal" class="hidden absolute inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all">
+                <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm text-center border-t-4 transition-all duration-200" id="modalCard">
+                    <div id="modalIconContainer" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i id="modalIcon" class="fa-solid text-xl"></i>
+                    </div>
+                    <h3 id="modalTitle" class="text-base font-bold text-gray-900 mb-1">Notice</h3>
+                    <div id="message" class="text-xs text-gray-600 mb-5 leading-relaxed"></div>
+                    <button 
+                        type="button" 
+                        id="closeErrorBtn"
+                        class="w-full text-white font-semibold py-2 px-4 rounded-lg text-xs transition duration-150">
+                        OK
+                    </button>
+                </div>
+            </div>
+
+            <div class="left hidden md:flex flex-col items-center justify-center w-1/2 bg-[#FCB800] p-6 text-center text-gray-900">
+                <img src="img/logo.png" class="w-20 h-20 object-contain mb-3 rounded-full" alt="WorkHive Logo">
+
+                <h1 class="text-2xl font-bold mb-2">
+                    Welcome to <span class="block text-gray-900">WorkHive</span>
+                </h1>
+
+                <p class="max-w-xs text-xs text-gray-800">
+                    “Choose a job you love, and you will never have to work a day in your life.” <br><br>
+                    — Confucius
+                </p>
+            </div>
+
+     
+            <div class="right w-full md:w-1/2 bg-white flex items-center justify-center p-4 md:p-6 overflow-hidden">
+                <div class="signup-card w-full max-w-sm">
+
+                    <h2 class="text-xl font-bold text-gray-900 mb-0.5">Create Account</h2>
+                    <p class="subtitle text-gray-500 mb-2 text-xs">Start your journey today.</p>
+
+                    <form id="signupForm" class="space-y-1.5">
+
+                        <div class="input-box flex items-center border border-gray-300 rounded-lg px-2.5 py-1.5 focus-within:border-[#FCB800]">
+                            <i class="fa-solid fa-user text-gray-400 mr-2 text-xs"></i>
+                            <input type="text" id="fullname" placeholder="Full Name" class="w-full bg-transparent focus:outline-none text-gray-700 text-xs" required>
+                        </div>
+
+                        <div class="input-box flex items-center border border-gray-300 rounded-lg px-2.5 py-1.5 focus-within:border-[#FCB800]">
+                            <i class="fa-solid fa-at text-gray-400 mr-2 text-xs"></i>
+                            <input type="text" id="username" placeholder="Username" class="w-full bg-transparent focus:outline-none text-gray-700 text-xs" required>
+                        </div>
+
+                        <div class="input-box flex items-center border border-gray-300 rounded-lg px-2.5 py-1.5 focus-within:border-[#FCB800]">
+                            <i class="fa-solid fa-envelope text-gray-400 mr-2 text-xs"></i>
+                            <input type="email" id="email" placeholder="Email Address" class="w-full bg-transparent focus:outline-none text-gray-700 text-xs" required>
+                        </div>
+
+                        <div class="input-box flex items-center border border-gray-300 rounded-lg px-2.5 py-1.5 focus-within:border-[#FCB800]">
+                            <i class="fa-solid fa-phone text-gray-400 mr-2 text-xs"></i>
+                            <input type="tel" id="phone" placeholder="Phone Number (Optional)" class="w-full bg-transparent focus:outline-none text-gray-700 text-xs">
+                        </div>
+
+                        <div class="input-box flex items-center border border-gray-300 rounded-lg px-2.5 py-1.5 focus-within:border-[#FCB800]">
+                            <i class="fa-solid fa-lock text-gray-400 mr-2 text-xs"></i>
+                            <input type="password" id="password" placeholder="Password" class="w-full bg-transparent focus:outline-none text-gray-700 text-xs" required>
+                        </div>
+
+                        <small id="strength" class="block text-[10px] text-gray-500"></small>
+
+                        <div class="show-password flex items-center gap-1.5 text-xs text-gray-600">
+                            <input type="checkbox" id="showPassword" class="accent-[#FCB800] rounded">
+                            <label for="showPassword" class="cursor-pointer text-xs">Show Password</label>
+                        </div>
+
+                        <div class="input-box flex items-center border border-gray-300 rounded-lg px-2.5 py-1.5 focus-within:border-[#FCB800]">
+                            <i class="fa-solid fa-lock text-gray-400 mr-2 text-xs"></i>
+                            <input type="password" id="confirmPassword" placeholder="Confirm Password" class="w-full bg-transparent focus:outline-none text-gray-700 text-xs" required>
+                        </div>
+
+                        <h3 class="font-bold text-gray-900 pt-0.5 text-xs">Select Role</h3>
+
+                        <div class="roles grid grid-cols-2 gap-2">
+
+                            <label class="role-card flex flex-col items-center border-2 border-gray-200 rounded-xl p-1.5 cursor-pointer transition-all duration-150 hover:border-[#FCB800]">
+                                <input type="radio" name="role" value="jobseeker" class="hidden peer">
+                                <div class="flex flex-col items-center peer-checked:text-[#FCB800]">
+                                    <i class="fa-solid fa-user text-sm text-gray-400 peer-checked:text-[#FCB800] mb-0.5"></i>
+                                    <h4 class="font-semibold text-gray-900 text-xs">Job Seeker</h4>
+                                    <p class="text-[9px] text-gray-500">Find & apply for jobs</p>
+                                </div>
+                            </label>
+
+                            <label class="role-card flex flex-col items-center border-2 border-gray-200 rounded-xl p-1.5 cursor-pointer transition-all duration-150 hover:border-[#FCB800]">
+                                <input type="radio" name="role" value="employer" class="hidden peer">
+                                <div class="flex flex-col items-center peer-checked:text-[#FCB800]">
+                                    <i class="fa-solid fa-briefcase text-sm text-gray-400 peer-checked:text-[#FCB800] mb-0.5"></i>
+                                    <h4 class="font-semibold text-gray-900 text-xs">Employer</h4>
+                                    <p class="text-[9px] text-gray-500">Post jobs & hire talent</p>
+                                </div>
+                            </label>
+
+                        </div>
+
+                        <div class="terms flex items-center gap-1.5 text-[10px] text-gray-600 pt-0.5">
+                            <input type="checkbox" id="terms" class="accent-[#FCB800] rounded" required>
+                            <label for="terms">
+                                I agree to the <a href="#" class="text-[#FCB800] font-medium hover:underline">Terms</a> & <a href="#" class="text-[#FCB800] font-medium hover:underline">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="w-full bg-[#FCB800] hover:bg-[#e0a400] text-gray-900 font-bold py-2 rounded-lg transition duration-200 text-xs shadow">
+                            Create Account
+                        </button>
+
+                    </form>
+
+                    <p class="login text-center text-xs text-gray-600 mt-2">
+                        Already have an account? <a href="index.html" class="text-[#FCB800] font-semibold hover:underline">Sign In</a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="signup.js"></script>
+</body>
+</html>
