@@ -1,7 +1,3 @@
-/* =========================================================
-   EMPLOYER DASHBOARD — WorkHive
-========================================================= */
-
 let EMPLOYER_PROFILE = null;
 let MY_JOBS = [];
 let MY_APPLICATIONS = [];
@@ -16,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (nameEl) nameEl.innerHTML = (EMPLOYER_PROFILE.company_name || EMPLOYER_PROFILE.full_name || EMPLOYER_PROFILE.username) + "<small>Employer</small>";
 
     fillProfileView();
+    wireEmployerUploads();
     await loadEmployerData();
 
     initViewSwitching();
@@ -32,9 +29,7 @@ window.addEventListener("pageshow", async function (event) {
     if (!session) window.location.replace("index.html");
 });
 
-/* =========================
-   VIEW SWITCHING (SPA nav)
-========================= */
+
 function initViewSwitching() {
     function showView(view) {
         document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
@@ -80,9 +75,7 @@ function initDemoButtons() {
     });
 }
 
-/* =========================
-   SEARCH
-========================= */
+
 function initSearch() {
     document.querySelectorAll(".search").forEach(input => {
         input.addEventListener("input", () => {
@@ -105,9 +98,7 @@ function initSearch() {
     if (applicantsFilterStatus) applicantsFilterStatus.addEventListener("change", renderApplicants);
 }
 
-/* =========================
-   DATA LOADING
-========================= */
+
 async function loadEmployerData() {
     const [{ data: jobs, error: jobsErr }, { data: apps, error: appsErr }, { data: convos, error: convosErr }] = await Promise.all([
         supabaseClient.from("jobs").select("*").eq("employer_id", EMPLOYER_PROFILE.id).order("created_at", { ascending: false }),
@@ -189,7 +180,6 @@ function renderRecentCandidates() {
             '<td><a class="btn outline" data-view="applicants">View</a></td>' +
         '</tr>'
     )).join("") || '<tr><td colspan="5" style="padding:20px;text-align:center;color:#888">No applications yet.</td></tr>';
-    // Reattach nav-link behaviour for the newly inserted "View" links
     body.querySelectorAll("[data-view]").forEach(el => el.addEventListener("click", e => { e.preventDefault(); window.showView(el.dataset.view); }));
 }
 
@@ -274,7 +264,6 @@ function renderApplicants() {
 
     body.querySelectorAll("[data-set-status]").forEach(btn => btn.addEventListener("click", async () => {
         btn.disabled = true;
-        // .select() returns the updated rows, so we can tell when RLS silently blocked the update
         const { data, error } = await supabaseClient.from("applications")
             .update({ status: btn.dataset.setStatus })
             .eq("id", btn.dataset.appId)
@@ -301,9 +290,7 @@ function fullName(profile) {
     return (profile && (profile.full_name || profile.username)) || "Applicant";
 }
 
-/* =========================
-   POST JOB FORM
-========================= */
+
 function initJobForm() {
     const jobForm = document.getElementById("jobForm");
     if (!jobForm) return;
@@ -331,14 +318,14 @@ function initJobForm() {
     });
 }
 
-/* =========================
-   PROFILE
-========================= */
+
+/* =========================================================
+   Profile view + UPLOAD handlers (logo + business file)
+   ========================================================= */
 function fillProfileView() {
     const p = EMPLOYER_PROFILE;
     document.getElementById("profileCompanyName").textContent = p.company_name || p.full_name || p.username;
     document.getElementById("profileCategory").textContent = "Employer";
-    document.getElementById("profileLogo").textContent = (p.company_name || p.full_name || "🏪")[0];
     document.getElementById("profileAddress").textContent = p.headline || "—";
     document.getElementById("profilePhone").textContent = p.phone || "—";
     document.getElementById("profileEmail").textContent = p.email;
@@ -348,6 +335,182 @@ function fillProfileView() {
     document.getElementById("formAddress").value = p.headline || "";
     document.getElementById("formPhone").value = p.phone || "";
     document.getElementById("formEmail").value = p.email;
+
+    refreshLogo();
+    refreshBusinessFile();
+}
+
+function refreshLogo() {
+    const img  = document.getElementById("profileLogoImg");
+    const init = document.getElementById("profileLogoInit");
+    const name = (EMPLOYER_PROFILE.company_name || EMPLOYER_PROFILE.full_name || EMPLOYER_PROFILE.username || "🏪").trim();
+    if (EMPLOYER_PROFILE.logo_url) {
+        img.src = EMPLOYER_PROFILE.logo_url;
+        img.style.display = "block";
+        init.style.display = "none";
+    } else {
+        img.removeAttribute("src");
+        img.style.display = "none";
+        init.textContent = name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "🏪";
+        init.style.display = "";
+    }
+}
+
+function refreshBusinessFile() {
+    const remove = document.getElementById("businessRemoveBtn");
+    const link   = document.getElementById("businessLink");
+    const a      = document.getElementById("businessAnchor");
+    const lbl    = document.getElementById("businessZoneLabel");
+    if (EMPLOYER_PROFILE.business_file_url) {
+        if (remove) remove.style.display = "";
+        if (link)   link.style.display = "";
+        if (a) { a.href = EMPLOYER_PROFILE.business_file_url; a.textContent = EMPLOYER_PROFILE.business_file_name || "document"; }
+        if (lbl)    lbl.textContent = "Current Business File";
+    } else {
+        if (remove) remove.style.display = "none";
+        if (link)   link.style.display = "none";
+        if (lbl)    lbl.textContent = "Upload Business File";
+    }
+}
+
+function setBusinessStatus(msg, cls) {
+    const s = document.getElementById("businessStatus");
+    if (!s) return;
+    s.textContent = msg;
+    s.className = "upload-zone-status " + (cls || "");
+    s.style.display = msg ? "" : "none";
+}
+
+function setBusinessProgress(visible, p) {
+    const wrap = document.getElementById("businessProgress");
+    if (!wrap) return;
+    wrap.style.display = visible ? "" : "none";
+    const bar = wrap.firstElementChild;
+    if (bar) bar.style.width = (p == null ? 0 : p) + "%";
+}
+
+async function handleLogo(file) {
+    if (!file) return;
+    const err = window.validateUpload(file, "image");
+    if (err) { setBusinessStatus(err, "error"); alert(err); return; }
+    const sniff = await window.sniffFile(file);
+    if (sniff !== "image/jpeg" && sniff !== "image/png" && sniff !== "image/webp") {
+        const m = "File contents don't look like a JPG/PNG/WEBP image.";
+        setBusinessStatus(m, "error"); alert(m); return;
+    }
+    const btn = document.getElementById("logoPickBtn");
+    btn.disabled = true;
+    try {
+        const { url } = await window.uploadWhFile(file, "logo", EMPLOYER_PROFILE.id);
+        const { error } = await supabaseClient.from("profiles")
+            .update({ logo_url: url })
+            .eq("id", EMPLOYER_PROFILE.id);
+        if (error) throw error;
+        EMPLOYER_PROFILE.logo_url = url;
+        refreshLogo();
+        setBusinessStatus("Logo updated.", "ok");
+        alert("Logo updated.");
+    } catch (e) {
+        const m = "Upload failed: " + (e.message || e);
+        setBusinessStatus(m, "error"); alert(m);
+    } finally {
+        btn.disabled = false;
+        setTimeout(() => setBusinessStatus("", ""), 4000);
+    }
+}
+
+async function handleBusinessFile(file) {
+    if (!file) return;
+    const err = window.validateUpload(file, "doc");
+    if (err) { setBusinessStatus(err, "error"); alert(err); return; }
+    const remove = document.getElementById("businessRemoveBtn");
+    remove.disabled = true;
+    setBusinessStatus("Uploading…", "ok");
+    setBusinessProgress(true, 25);
+    try {
+        setBusinessProgress(true, 60);
+        const { url } = await window.uploadWhFile(file, "business", EMPLOYER_PROFILE.id);
+        setBusinessProgress(true, 85);
+        const { error } = await supabaseClient.from("profiles")
+            .update({ business_file_url: url, business_file_name: file.name })
+            .eq("id", EMPLOYER_PROFILE.id);
+        if (error) throw error;
+        EMPLOYER_PROFILE.business_file_url = url;
+        EMPLOYER_PROFILE.business_file_name = file.name;
+        setBusinessProgress(true, 100);
+        refreshBusinessFile();
+        setBusinessStatus("Business file uploaded!", "ok");
+        alert("Business file uploaded.");
+    } catch (e) {
+        const m = "Upload failed: " + (e.message || e);
+        setBusinessStatus(m, "error"); alert(m);
+    } finally {
+        setTimeout(() => setBusinessProgress(false, 0), 600);
+        setTimeout(() => setBusinessStatus("", ""), 4000);
+        remove.disabled = false;
+    }
+}
+
+async function removeBusinessFile() {
+    if (!confirm("Remove your current business file?")) return;
+    const remove = document.getElementById("businessRemoveBtn");
+    remove.disabled = true;
+    try {
+        await window.deleteWhFile(EMPLOYER_PROFILE.business_file_url);
+        const { error } = await supabaseClient.from("profiles")
+            .update({ business_file_url: null, business_file_name: null })
+            .eq("id", EMPLOYER_PROFILE.id);
+        if (error) throw error;
+        EMPLOYER_PROFILE.business_file_url = null;
+        EMPLOYER_PROFILE.business_file_name = null;
+        refreshBusinessFile();
+        setBusinessStatus("Business file removed.", "ok");
+        alert("Business file removed.");
+    } catch (e) {
+        const m = "Could not remove: " + e.message;
+        setBusinessStatus(m, "error"); alert(m);
+    } finally { remove.disabled = false; }
+}
+
+function wireEmployerUploads() {
+    const logoInput = document.getElementById("logoInput");
+    const logoPick  = document.getElementById("logoPickBtn");
+    const logoBox   = document.getElementById("profileLogo");
+
+    if (logoPick) logoPick.addEventListener("click", e => { e.stopPropagation(); logoInput.click(); });
+    if (logoBox)  logoBox.addEventListener("click", e => {
+        if (e.target.closest(".profile-logo-edit")) logoInput.click();
+    });
+    if (logoInput) logoInput.addEventListener("change", e => {
+        const f = e.target.files && e.target.files[0];
+        if (f) handleLogo(f);
+        e.target.value = "";
+    });
+
+    const busInput = document.getElementById("businessInput");
+    const busPick  = document.getElementById("businessPickBtn");
+    const busRem   = document.getElementById("businessRemoveBtn");
+    if (busPick)  busPick.addEventListener("click", e => { e.stopPropagation(); busInput.click(); });
+    if (busInput) busInput.addEventListener("change", e => {
+        const f = e.target.files && e.target.files[0];
+        if (f) handleBusinessFile(f);
+        e.target.value = "";
+    });
+    if (busRem) busRem.addEventListener("click", removeBusinessFile);
+
+    const zone = document.getElementById("businessZone");
+    if (zone) {
+        zone.addEventListener("click", e => {
+            if (e.target.id === "businessRemoveBtn") return;
+            busInput.click();
+        });
+        ["dragenter","dragover"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add("dragging"); }));
+        ["dragleave","drop"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove("dragging"); }));
+        zone.addEventListener("drop", e => {
+            const f = e.dataTransfer.files && e.dataTransfer.files[0];
+            if (f) handleBusinessFile(f);
+        });
+    }
 }
 
 function initProfileForm() {
@@ -369,9 +532,7 @@ function initProfileForm() {
     });
 }
 
-/* =========================
-   MESSAGES (real, employer <-> job seeker)
-========================= */
+
 let lastChatKey = "";
 
 function initMessages() {
@@ -395,7 +556,7 @@ function initMessages() {
             await renderChat();
         });
     }
-    // Keep the inbox live: check for new conversations and messages every few seconds
+
     setInterval(pollMessages, 4000);
 }
 
@@ -462,7 +623,7 @@ async function renderChat() {
         body.innerHTML = '<div style="padding:16px;color:#c62828;font-size:13px">Could not load messages: ' + error.message + '</div>';
         return;
     }
-    // Skip the redraw when nothing changed (avoids flicker while polling)
+
     const key = c.id + ":" + (messages || []).map(m => m.id).join(",");
     if (key === lastChatKey) return;
     lastChatKey = key;
