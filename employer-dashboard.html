@@ -37,7 +37,7 @@ button, input, select, textarea { font: inherit; }
 ::-webkit-scrollbar-thumb { background: #d9d4c7; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--yellow); }
 
-/* ================= SIDEBAR ================= */
+
 .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: var(--ink); color: #d8d3c7; display: flex; flex-direction: column; z-index: 30; overflow: hidden; }
 .sidebar::after { content: ""; position: absolute; right: -60px; bottom: 80px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(252,184,0,.14), transparent 70%); pointer-events: none; }
 .brand { height: 84px; display: flex; align-items: center; gap: 12px; padding: 0 22px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.06); }
@@ -58,7 +58,7 @@ button, input, select, textarea { font: inherit; }
 .logout i { width: 18px; text-align: center; }
 .logout:hover { background: rgba(214,69,69,.14); color: #ffb0b0; }
 
-/* ================= MAIN / TOPBAR ================= */
+
 .main { margin-left: 250px; min-height: 100vh; padding: 0 32px 40px; }
 .topbar { position: sticky; top: 0; z-index: 25; height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 0 -32px; padding: 0 32px; background: rgba(245,244,240,.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
 .search-wrap { position: relative; width: 440px; max-width: 100%; }
@@ -75,12 +75,11 @@ button, input, select, textarea { font: inherit; }
 .user small { display: block; color: var(--muted); font-weight: 400; font-size: 11px; margin-top: 2px; }
 .page { padding-top: 28px; }
 
-/* ================= VIEW SWITCHING ================= */
 .view { display: none; }
 .view.active { display: block; animation: fadeUp .35s ease; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-/* ================= WELCOME ================= */
+
 .welcome { position: relative; overflow: hidden; background: linear-gradient(120deg, #fcb800 0%, #ffcb3d 55%, #ffdb70 100%); border-radius: 22px; padding: 30px 32px; display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 24px; box-shadow: 0 18px 40px -20px rgba(217,154,0,.7); }
 .welcome::before { content: ""; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 56 98'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 32L0 82V50l28 16 28-16v32L28 98z' fill='none' stroke='%23000' stroke-opacity='.06' stroke-width='1.5'/%3E%3C/svg%3E"); pointer-events: none; }
 .welcome > * { position: relative; }
@@ -90,7 +89,7 @@ button, input, select, textarea { font: inherit; }
 .quote { font-style: italic; background: rgba(255,255,255,.4); border: 1px solid rgba(255,255,255,.55); backdrop-filter: blur(4px); padding: 16px 20px; border-radius: 14px; max-width: 320px; font-size: 13px; color: #3d2f05; line-height: 1.55; }
 .quote i { color: rgba(23,20,15,.35); margin-right: 6px; }
 
-/* ================= CARDS / STATS ================= */
+
 .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
 .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .stat { display: flex; align-items: flex-start; justify-content: space-between; min-height: 118px; transition: transform .2s, box-shadow .2s; }
@@ -105,7 +104,7 @@ button, input, select, textarea { font: inherit; }
 .trend { font-size: 11.5px; color: var(--green); font-weight: 500; }
 .trend.warn { color: #c87d00; }
 
-/* ================= PANELS ================= */
+
 .two { display: grid; grid-template-columns: 1.7fr 1fr; gap: 20px; margin-top: 22px; }
 .panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm); }
 .panel-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
@@ -115,7 +114,7 @@ button, input, select, textarea { font: inherit; }
 .panel-title a { font-size: 12.5px; color: var(--yellow-dark); cursor: pointer; font-weight: 600; }
 .panel-title a:hover { text-decoration: underline; }
 
-/* ================= TABLE ================= */
+
 table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: 14px 12px; border-bottom: 1px solid #f1eee8; font-size: 13px; vertical-align: middle; }
 th { font-size: 10.5px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); font-weight: 600; background: #faf9f6; }
@@ -124,7 +123,7 @@ tbody tr { transition: background .15s; }
 tbody tr:hover { background: #fffbef; }
 tbody tr:last-child td { border-bottom: 0; }
 
-/* ================= BADGES ================= */
+
 .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 99px; font-size: 11px; font-weight: 600; text-transform: capitalize; white-space: nowrap; }
 .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .badge.active { background: #e3f6ec; color: var(--green); }
@@ -132,7 +131,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .badge.short { background: #e8efff; color: var(--blue); }
 .badge.rejected { background: #fde8e8; color: var(--red); }
 
-/* ================= BUTTONS ================= */
+
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 10px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 12.5px; transition: background .2s, transform .1s, box-shadow .2s; white-space: nowrap; }
 .btn:active { transform: scale(.97); }
 .btn.primary, .primary { background: var(--yellow); color: var(--ink); }
@@ -149,7 +148,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .quick-actions .btn { padding: 14px 12px; flex-direction: column; gap: 8px; font-size: 12.5px; border-radius: 14px; }
 .quick-actions .btn i { font-size: 18px; }
 
-/* ================= JOB CARDS ================= */
+
 .job-list { display: grid; gap: 12px; }
 .job { position: relative; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px 18px 22px; display: flex; justify-content: space-between; gap: 16px; transition: border-color .2s, box-shadow .2s, transform .2s; overflow: hidden; }
 .job::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--yellow); opacity: 0; transition: opacity .2s; }
@@ -163,23 +162,22 @@ tbody tr:last-child td { border-bottom: 0; }
 .save-btn:hover { background: var(--yellow-light); }
 .save-btn.saved { background: var(--yellow-light); border-color: #f4dc94; color: #a36b00; }
 
-/* ================= APPLICANT / AVATAR ================= */
+
 .applicant { display: flex; align-items: center; gap: 12px; }
 .applicant small { display: block; color: var(--muted); margin-top: 2px; font-size: 11.5px; }
 .avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #ffe7a3, #ffd25c); color: #5a4300; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
 
-/* ================= FILTERS ================= */
+
 .filters { display: flex; gap: 10px; margin-bottom: 18px; background: #fff; border: 1px solid var(--border); padding: 10px; border-radius: 14px; box-shadow: var(--shadow-sm); }
 .filters .search { flex: 1; padding-left: 15px; background: #faf9f6; border-color: transparent; }
 .filters .search:focus { background: #fff; }
 .filters select { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: #fff; font-size: 13px; cursor: pointer; outline: none; }
 .filters select:focus { border-color: var(--yellow); }
 
-/* ================= NOTICE ================= */
+
 .notice { display: flex; gap: 10px; align-items: flex-start; padding: 13px 15px; border-radius: 12px; background: var(--yellow-light); border: 1px solid #f6e2a6; margin-top: 14px; font-size: 13px; line-height: 1.5; color: #5a4a1c; }
 .empty-notice { padding: 40px 15px; text-align: center; color: var(--muted); font-size: 13px; background: #fff; border: 1px dashed #ddd7ca; border-radius: 14px; }
 
-/* ================= MODAL ================= */
 .modal { display: none; position: fixed; inset: 0; background: rgba(23,20,15,.55); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
 .modal.open { display: flex; animation: fadeIn .2s ease; }
 .modal.open .modal-box { animation: popIn .25s cubic-bezier(.2,.9,.3,1.2); }
@@ -191,7 +189,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .close { width: 36px; height: 36px; border-radius: 10px; border: 0; background: #f4f2ec; font-size: 20px; cursor: pointer; line-height: 1; transition: background .2s; }
 .close:hover { background: #ebe7dd; }
 
-/* Logout confirmation */
+
 .confirm-box { width: 400px; text-align: center; padding: 30px 28px 26px; }
 .confirm-icon { width: 64px; height: 64px; border-radius: 50%; background: #fde8e8; color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px; box-shadow: 0 0 0 8px #fff4f4; }
 .confirm-box h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
@@ -201,7 +199,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .btn.logout-confirm { background: var(--red); color: #fff; }
 .btn.logout-confirm:hover { background: #bb3535; box-shadow: 0 6px 16px -6px rgba(214,69,69,.7); }
 
-/* ================= FORMS ================= */
+
 .form { display: grid; gap: 14px; }
 .field { display: grid; gap: 6px; }
 .field label { font-size: 12px; font-weight: 600; color: #4a463e; }
@@ -211,7 +209,6 @@ tbody tr:last-child td { border-bottom: 0; }
 .form textarea { min-height: 100px; resize: vertical; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-/* ================= MESSAGES ================= */
 .message-layout { display: grid; grid-template-columns: 310px 1fr; height: 580px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
 .conversations { border-right: 1px solid var(--border); overflow-y: auto; background: #fcfbf8; }
 .conversation { padding: 15px 16px; border-bottom: 1px solid #f1eee8; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background .15s; border-left: 3px solid transparent; }
@@ -231,11 +228,22 @@ tbody tr:last-child td { border-bottom: 0; }
 .chat-input input:focus { border-color: var(--yellow); box-shadow: 0 0 0 4px rgba(252,184,0,.15); }
 .chat-input .btn { padding: 0 20px; }
 
-/* ================= PROFILE ================= */
 .profile-grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
 .profile-card { text-align: center; padding: 0 0 22px; overflow: hidden; }
 .profile-cover { height: 86px; background: linear-gradient(120deg, #fcb800, #ffd86b); margin-bottom: -46px; }
-.profile-logo { position: relative; width: 92px; height: 92px; border-radius: 26px; background: var(--ink); color: var(--yellow); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; margin: 0 auto 14px; border: 4px solid #fff; box-shadow: var(--shadow); }
+.profile-logo { position: relative; width: 92px; height: 92px; border-radius: 26px; background: var(--ink); color: var(--yellow); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; margin: 0 auto 14px; border: 4px solid #fff; box-shadow: var(--shadow); overflow: hidden; }
+.profile-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profile-logo .init { font-size: 30px; }
+.profile-logo-edit {
+  position: absolute; right: -4px; bottom: -4px;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 2px solid #fff; background: var(--yellow);
+  color: var(--ink); font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  z-index: 2;
+}
+.profile-logo-edit:hover { background: var(--yellow-dark); }
 .profile-card h2 { font-size: 19px; font-weight: 600; padding: 0 20px; }
 .profile-card > p { color: var(--muted); font-size: 13px; margin-top: 4px; padding: 0 20px; }
 .info-list { margin: 20px 20px 0; text-align: left; display: grid; gap: 4px; border-top: 1px solid var(--border); padding-top: 14px; }
@@ -248,7 +256,30 @@ tbody tr:last-child td { border-bottom: 0; }
 .mini-stat p { font-size: 12px; color: var(--muted); font-weight: 500; }
 .mini-stat h2 { font-size: 26px; font-weight: 700; margin-top: 4px; }
 
-/* ================= RESPONSIVE ================= */
+/* ===== Upload UI ===== */
+.upload-zone {
+  margin: 18px 20px 0; padding: 16px 14px; border-radius: 14px;
+  border: 1.5px dashed #d8d2c4; background: #fafaf6;
+  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: border-color .2s, background .2s;
+}
+.upload-zone.dragging { border-color: var(--yellow); background: var(--yellow-light); }
+.upload-zone i.zone-icon { font-size: 24px; color: var(--yellow-dark); }
+.upload-zone-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.upload-zone-help  { font-size: 11.5px; color: var(--muted); }
+.upload-zone-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.upload-zone-actions .btn { padding: 8px 12px; font-size: 12px; }
+.upload-zone-link { font-size: 12.5px; color: var(--green); display: flex; gap: 6px; align-items: center; }
+.upload-zone-link a { color: var(--green); font-weight: 600; text-decoration: underline; }
+.upload-zone-status { font-size: 12px; font-weight: 600; }
+.upload-zone-status.ok    { color: var(--green); }
+.upload-zone-status.error { color: var(--red); }
+.progress-wrap {
+  width: 100%; height: 6px; background: #ece8de; border-radius: 99px; overflow: hidden;
+}
+.progress-wrap > span { display:block; height:100%; width:0%; background: var(--yellow); transition: width .2s; }
+
+
 @media (max-width: 1150px) {
   .grid4 { grid-template-columns: repeat(2, 1fr); }
   .two, .profile-grid { grid-template-columns: 1fr; }
@@ -289,14 +320,13 @@ tbody tr:last-child td { border-bottom: 0; }
     <div class="nav-label">Menu</div>
     <nav class="nav">
       <a data-view="overview" class="active"><i class="fa-solid fa-house"></i><span class="label">Overview</span></a>
-      <a data-view="jobs"><i class="fa-solid fa-briefcase"></i><span class="label">Job Listings</span></a>
-      <a data-view="applicants"><i class="fa-solid fa-users"></i><span class="label">Applications</span></a>
+      <a data-view="jobs"><i class="fa-solid fa-bullhorn"></i><span class="label">Jobs & Applicants</span></a>
       <a data-view="messages"><i class="fa-solid fa-comments"></i><span class="label">Messages</span></a>
-      <a data-view="profile"><i class="fa-solid fa-building"></i><span class="label">Business Profile</span></a>
+      <a data-view="profile"><i class="fa-solid fa-building"></i><span class="label">My Business</span></a>
     </nav>
 
     <div class="sidebar-footer">
-      <div class="help-card"><b><i class="fa-solid fa-lightbulb"></i> Hiring tip</b>Clear job descriptions attract better-matched applicants.</div>
+      <div class="help-card"><b><i class="fa-solid fa-lightbulb"></i> Hire smarter</b>Complete profiles attract more applicants faster.</div>
       <a class="logout" data-demo="logout"><i class="fa-solid fa-right-from-bracket"></i><span class="label">Logout</span></a>
     </div>
   </aside>
@@ -305,12 +335,12 @@ tbody tr:last-child td { border-bottom: 0; }
     <header class="topbar">
       <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input class="search" type="text" placeholder="Search candidates, jobs, keywords...">
+        <input class="search" id="topSearch" type="text" placeholder="Search applicants, jobs, conversations...">
       </div>
       <div class="top-actions">
         <span class="bell" onclick="alert('No new notifications.')" title="Notifications"><i class="fa-regular fa-bell"></i></span>
         <div class="user-chip">
-          <div class="user-avatar"><i class="fa-solid fa-building"></i></div>
+          <div class="user-avatar"><i class="fa-solid fa-store"></i></div>
           <div class="user" id="employerName">Employer<small>Employer</small></div>
         </div>
       </div>
@@ -318,33 +348,32 @@ tbody tr:last-child td { border-bottom: 0; }
 
     <div class="page">
 
-      <!-- ================= OVERVIEW ================= -->
-      <section id="view-overview" class="view active">
 
+      <section id="view-overview" class="view active">
         <section class="welcome">
           <div>
-            <span class="eyebrow"><i class="fa-solid fa-building"></i> Employer Dashboard</span>
-            <h1>Welcome back 👋</h1>
-            <p>Here is what is happening with your job postings and applicants today.</p>
+            <span class="eyebrow"><i class="fa-solid fa-bullhorn"></i> Employer Dashboard</span>
+            <h1 id="welcomeHeading">Welcome back 👋</h1>
+            <p>Here's a quick overview of your hiring activity.</p>
           </div>
-          <div class="quote"><i class="fa-solid fa-quote-left"></i>Choose a job you love, and you will never have to work a day in your life.</div>
+          <div class="quote"><i class="fa-solid fa-quote-left"></i>Great hires start with a great profile.</div>
         </section>
 
         <section class="grid4">
           <div class="card stat">
-            <div><p>Active Jobs</p><h2 id="statActiveJobs">0</h2><span class="trend" id="trendActiveJobs">Your open listings</span></div>
-            <div class="icon c-yellow"><i class="fa-solid fa-briefcase"></i></div>
+            <div><p>Active Jobs</p><h2 id="statActiveJobs">0</h2><span class="trend"><i class="fa-solid fa-arrow-trend-up"></i></span><span id="trendActiveJobs"></span></div>
+            <div class="icon c-yellow"><i class="fa-solid fa-bullhorn"></i></div>
           </div>
           <div class="card stat">
-            <div><p>Total Applicants</p><h2 id="statTotalApplicants">0</h2><span class="trend" id="trendApplicants">Across all jobs</span></div>
+            <div><p>Total Applicants</p><h2 id="statTotalApplicants">0</h2><span class="trend"><i class="fa-solid fa-users"></i></span> <span id="trendApplicants"></span></div>
             <div class="icon c-blue"><i class="fa-solid fa-users"></i></div>
           </div>
           <div class="card stat">
-            <div><p>Shortlisted</p><h2 id="statShortlisted">0</h2><span class="trend" id="trendShortlisted">In review pipeline</span></div>
+            <div><p>Shortlisted</p><h2 id="statShortlisted">0</h2><span class="trend">In review pipeline</span></div>
             <div class="icon c-purple"><i class="fa-solid fa-star"></i></div>
           </div>
           <div class="card stat">
-            <div><p>Interviews</p><h2 id="statInterviews">0</h2><span class="trend warn" id="trendInterviews">None yet</span></div>
+            <div><p>Interviews</p><h2 id="statInterviews">0</h2><span class="trend warn">In progress</span></div>
             <div class="icon c-green"><i class="fa-solid fa-calendar-check"></i></div>
           </div>
         </section>
@@ -352,70 +381,74 @@ tbody tr:last-child td { border-bottom: 0; }
         <section class="two">
           <div class="panel">
             <div class="panel-title">
-              <div><h2>Recent Candidates</h2><p>Latest people who applied to your jobs</p></div>
-              <a data-view="applicants">View All <i class="fa-solid fa-arrow-right"></i></a>
+              <div><h2>Recent Candidates</h2><p>Latest applicants across all your jobs.</p></div>
+              <a data-view="jobs">View All <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-            <table>
-              <thead><tr><th>Candidate</th><th>Applied Role</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-              <tbody id="recentCandidatesBody"></tbody>
-            </table>
+            <div class="panel" style="padding:0;border:0;box-shadow:none;">
+              <table>
+                <thead><tr><th>Candidate</th><th>Job</th><th>Date</th><th>Status</th><th></th></tr></thead>
+                <tbody id="recentCandidatesBody"></tbody>
+              </table>
+            </div>
           </div>
 
           <div class="panel">
-            <div class="panel-title"><h2>Quick Actions</h2></div>
-            <div class="quick-actions">
-              <a class="btn primary" data-view="jobs" data-modal="jobModal"><i class="fa-solid fa-plus"></i>Post New Job</a>
-              <a class="btn outline" data-view="applicants"><i class="fa-solid fa-users"></i>View Applicants</a>
-              <a class="btn outline" data-view="messages"><i class="fa-solid fa-comments"></i>Open Messages</a>
-              <a class="btn outline" data-view="profile"><i class="fa-solid fa-pen-to-square"></i>Edit Profile</a>
-            </div>
-            <div class="notice"><i class="fa-solid fa-lightbulb" style="margin-top:3px;color:#d99a00"></i><span><b>Tip:</b> Keep your job descriptions clear and updated to attract better applicants.</span></div>
+            <div class="panel-title"><h2>Notifications</h2></div>
+            <div id="notificationsList"></div>
           </div>
         </section>
 
       </section>
 
-      <!-- ================= JOB LISTINGS ================= -->
+
       <section id="view-jobs" class="view">
-
         <div class="panel-title">
-          <div><h2>Job Listings</h2><p>Create and manage your job openings.</p></div>
-          <button class="btn primary" onclick="openModal('jobModal')"><i class="fa-solid fa-plus"></i> Post New Job</button>
+          <div>
+            <h2>Jobs & Applicants</h2>
+            <p>Post new jobs and review incoming candidates.</p>
+          </div>
+          <div class="actions">
+            <button class="btn primary" data-modal="jobModal"><i class="fa-solid fa-plus"></i> Post New Job</button>
+          </div>
         </div>
 
-        <div class="filters">
-          <input class="search" id="jobsFilterSearch" placeholder="Search jobs...">
-          <select id="jobsFilterStatus"><option value="">All Status</option><option value="active">Active</option><option value="closed">Closed</option></select>
-          <select id="jobsFilterCategory"><option value="">All Categories</option><option>Retail</option><option>Food Service</option><option>IT</option><option>Office Work</option><option>Construction</option></select>
-        </div>
+        <div class="two">
+          <div class="panel">
+            <div class="panel-title"><h2>My Job Listings</h2></div>
+            <div class="filters">
+              <input class="search" id="jobsSearch" placeholder="Search jobs...">
+              <select id="jobsFilterStatus"><option value="">All Status</option><option value="active">Active</option><option value="closed">Closed</option></select>
+              <select id="jobsFilterCategory"><option value="">All Categories</option><option>Retail</option><option>Food Service</option><option>Logistics</option></select>
+            </div>
+            <div class="job-list" id="employerJobsList"></div>
+          </div>
 
-        <div class="job-list" id="employerJobsList"></div>
+          <div class="panel">
+            <div class="panel-title"><h2>Applications</h2></div>
+            <div class="filters">
+              <select id="applicantsFilterJob"><option value="">All Jobs</option></select>
+              <select id="applicantsFilterStatus">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="shortlisted">Shortlisted</option>
+                <option value="interview">Interview</option>
+                <option value="accepted">Hired</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="panel" style="padding:0;border:0;box-shadow:none;">
+              <table>
+                <thead><tr><th>Candidate</th><th>Job</th><th>Date</th><th>Status</th><th></th></tr></thead>
+                <tbody id="applicantsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- ================= APPLICATIONS ================= -->
-      <section id="view-applicants" class="view">
 
-        <div class="panel-title">
-          <div><h2>Applications</h2><p>Review and manage candidates who applied to your jobs.</p></div>
-        </div>
-
-        <div class="filters">
-          <input class="search" id="applicantsFilterSearch" placeholder="Search candidates...">
-          <select id="applicantsFilterJob"><option value="">All Jobs</option></select>
-          <select id="applicantsFilterStatus"><option value="">All Status</option><option value="pending">Pending</option><option value="shortlisted">Shortlisted</option><option value="interview">Interview</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option></select>
-        </div>
-
-        <div class="panel">
-          <table>
-            <thead><tr><th>Candidate</th><th>Applied Role</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="applicantsBody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ================= MESSAGES ================= -->
       <section id="view-messages" class="view">
-        <div class="panel-title"><div><h2>Messages</h2><p>Communicate with applicants.</p></div></div>
+        <div class="panel-title"><div><h2>Messages</h2><p>Communicate with job seekers.</p></div></div>
 
         <div class="message-layout">
           <div class="conversations" id="conversationList"></div>
@@ -430,62 +463,77 @@ tbody tr:last-child td { border-bottom: 0; }
         </div>
       </section>
 
-      <!-- ================= BUSINESS PROFILE ================= -->
+
       <section id="view-profile" class="view">
-        <div class="panel-title"><div><h2>Business Profile</h2><p>Manage your business information and hiring statistics.</p></div></div>
+        <div class="panel-title"><div><h2>My Business</h2><p>Manage your brand and company documents.</p></div></div>
 
         <div class="profile-grid">
           <div class="card profile-card">
             <div class="profile-cover"></div>
-            <div class="profile-logo" id="profileLogo">🏪</div>
+
+            <!-- Logo with upload button -->
+            <div class="profile-logo" id="profileLogo">
+              <img id="profileLogoImg" alt="" style="display:none">
+              <span class="init" id="profileLogoInit">🏪</span>
+              <button type="button" class="profile-logo-edit" id="logoPickBtn" title="Change logo">
+                <i class="fa-solid fa-camera"></i>
+              </button>
+            </div>
+            <input type="file" id="logoInput"
+                   accept="image/jpeg,image/png,image/webp"
+                   hidden>
+
             <h2 id="profileCompanyName">Your Business</h2>
             <p id="profileCategory">Employer</p>
             <span class="badge active" style="margin-top:12px">Verified Employer</span>
+
             <div class="info-list">
               <div><i class="fa-solid fa-location-dot"></i><span><b>Address</b><span id="profileAddress">—</span></span></div>
               <div><i class="fa-solid fa-phone"></i><span><b>Phone</b><span id="profilePhone">—</span></span></div>
               <div><i class="fa-solid fa-envelope"></i><span><b>Email</b><span id="profileEmail">—</span></span></div>
             </div>
+
+            <!-- Business file upload zone -->
+            <div class="upload-zone" id="businessZone">
+              <i class="fa-solid fa-file-circle-plus zone-icon"></i>
+              <div class="upload-zone-label" id="businessZoneLabel">Upload Business File</div>
+              <div class="upload-zone-help">Permit, business license, brochure — PDF / DOC / DOCX — max 10 MB</div>
+              <div class="upload-zone-actions">
+                <button type="button" class="btn dark" id="businessPickBtn">
+                  <i class="fa-solid fa-upload"></i> Choose file
+                </button>
+                <button type="button" class="btn danger" id="businessRemoveBtn" style="display:none">
+                  <i class="fa-solid fa-trash"></i> Remove
+                </button>
+              </div>
+              <div class="upload-zone-link" id="businessLink" style="display:none">
+                <i class="fa-solid fa-paperclip"></i>
+                <a id="businessAnchor" href="#" target="_blank" rel="noopener">document.pdf</a>
+              </div>
+              <div class="progress-wrap" id="businessProgress" style="display:none"><span></span></div>
+              <div class="upload-zone-status" id="businessStatus" style="display:none"></div>
+            </div>
+            <input type="file" id="businessInput"
+                   accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                   hidden>
           </div>
 
           <div class="panel">
-            <div class="panel-title"><div><h2>Edit Business Information</h2><p>This is what applicants see about your company.</p></div></div>
+            <div class="panel-title"><div><h2>Edit Business Information</h2><p>Keep your contact info up to date.</p></div></div>
             <form class="form" id="profileForm">
               <div class="form-grid">
-                <div class="field"><label>Business Name</label><input id="formCompanyName"></div>
-                <div class="field"><label>Business Category</label>
-                  <select id="formCategory"><option>Retail</option><option>Food Service</option><option>Technology</option></select>
-                </div>
-              </div>
-              <div class="field"><label>Description</label>
-                <textarea id="formBio"></textarea>
-              </div>
-              <div class="form-grid">
-                <div class="field"><label>Address</label><input id="formAddress"></div>
+                <div class="field"><label>Company Name</label><input id="formCompanyName"></div>
                 <div class="field"><label>Phone</label><input id="formPhone"></div>
               </div>
-              <div class="field"><label>Email</label><input id="formEmail" disabled></div>
+              <div class="field"><label>Bio</label><textarea id="formBio"></textarea></div>
+              <div class="form-grid">
+                <div class="field"><label>Address</label><input id="formAddress"></div>
+                <div class="field"><label>Email</label><input id="formEmail" disabled></div>
+              </div>
               <div class="actions" style="justify-content:flex-end">
                 <button type="submit" class="btn primary"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
               </div>
             </form>
-          </div>
-        </div>
-
-        <div class="two">
-          <div class="panel">
-            <div class="panel-title"><h2>Hiring Statistics</h2></div>
-            <div class="grid4">
-              <div class="mini-stat"><p>Active Jobs</p><h2 id="pfActiveJobs">0</h2></div>
-              <div class="mini-stat"><p>Applicants</p><h2 id="pfApplicants">0</h2></div>
-              <div class="mini-stat"><p>Interviews</p><h2 id="pfInterviews">0</h2></div>
-              <div class="mini-stat"><p>Hired</p><h2 id="pfHired">0</h2></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-title"><h2>Notifications</h2></div>
-            <div id="notificationsList"><div class="notice">No new notifications.</div></div>
           </div>
         </div>
       </section>
@@ -494,36 +542,37 @@ tbody tr:last-child td { border-bottom: 0; }
   </main>
 </div>
 
-<!-- POST JOB MODAL -->
+
 <div class="modal" id="jobModal">
   <div class="modal-box">
     <div class="modal-head">
-      <h2><i class="fa-solid fa-briefcase" style="color:#d99a00;margin-right:6px"></i> Post a New Job</h2>
+      <h2>Post a New Job</h2>
       <button class="close" onclick="closeModal('jobModal')">×</button>
     </div>
     <form class="form" id="jobForm">
+      <div class="field"><label>Job Title</label><input required placeholder="e.g. Cashier"></div>
       <div class="form-grid">
-        <div class="field"><label>Job Title</label><input required placeholder="e.g. Cashier"></div>
         <div class="field"><label>Category</label>
           <select required>
-            <option value="">Select Category</option>
-            <option>Retail</option><option>Food Service</option><option>IT</option><option>Office Work</option><option>Construction</option>
+            <option>Retail</option><option>Food Service</option><option>Logistics</option>
+          </select>
+        </div>
+        <div class="field"><label>Job Type</label>
+          <select required>
+            <option>Full-time</option><option>Part-time</option>
           </select>
         </div>
       </div>
-      <div class="field"><label>Description</label><textarea required placeholder="Describe the job..."></textarea></div>
-      <div class="field"><label>Requirements</label><textarea required placeholder="Enter requirements..."></textarea></div>
+      <div class="field"><label>Description</label><textarea required placeholder="Key responsibilities..."></textarea></div>
+      <div class="field"><label>Requirements</label><textarea placeholder="Skills / experience needed"></textarea></div>
       <div class="form-grid">
-        <div class="field"><label>Salary</label><input required placeholder="₱12,000 - ₱15,000"></div>
-        <div class="field"><label>Job Type</label>
-          <select required><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option></select>
-        </div>
+        <div class="field"><label>Salary</label><input placeholder="e.g. ₱15,000 / month"></div>
+        <div class="field"><label>Location</label><input required placeholder="e.g. Manila"></div>
       </div>
       <div class="form-grid">
-        <div class="field"><label>Location</label><input required placeholder="City/Municipality"></div>
         <div class="field"><label>Vacancies</label><input type="number" min="1" required></div>
+        <div class="field"><label>Application Deadline</label><input type="date" required></div>
       </div>
-      <div class="field"><label>Application Deadline</label><input type="date" required></div>
       <div class="actions" style="justify-content:flex-end">
         <button type="button" class="btn outline" onclick="closeModal('jobModal')">Cancel</button>
         <button type="submit" class="btn primary"><i class="fa-solid fa-check"></i> Post Job</button>
@@ -532,7 +581,7 @@ tbody tr:last-child td { border-bottom: 0; }
   </div>
 </div>
 
-<!-- LOGOUT CONFIRMATION MODAL -->
+
 <div class="modal" id="logoutModal">
   <div class="modal-box confirm-box">
     <div class="confirm-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
@@ -549,5 +598,6 @@ tbody tr:last-child td { border-bottom: 0; }
 <script src="supabase-client.js"></script>
 <script src="employer-dashboard.js"></script>
 
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920" integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/r8md2+xvUPtTdvTNRfjA==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
