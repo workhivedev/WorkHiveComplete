@@ -21,9 +21,7 @@ function toast(msg, type) {
 document.getElementById("seekerName").innerHTML = (SEEKER_PROFILE.full_name || SEEKER_PROFILE.username) + "<small>Job Seeker</small>";
 document.getElementById("welcomeHeading").textContent = "Welcome back, " + (SEEKER_PROFILE.full_name || SEEKER_PROFILE.username).split(" ")[0] + " 👋";
 
-/* =========================
-   VIEW SWITCHING (SPA nav)
-========================= */
+
 function showView(view) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   const target = document.getElementById("view-" + view);
@@ -43,9 +41,7 @@ document.querySelectorAll("[data-view]").forEach(function (el) {
   });
 });
 
-/* =========================
-   MODAL
-========================= */
+
 function openModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add("open");
@@ -62,15 +58,13 @@ window.addEventListener("click", function (event) {
   });
 });
 
-/* =========================
-   LOGOUT / RESUME DEMO BUTTON
-========================= */
+
 document.querySelectorAll("[data-demo]").forEach(function (button) {
   button.addEventListener("click", async function () {
     if (this.dataset.demo === "logout") {
       openModal("logoutModal");
     } else if (this.dataset.demo === "resume") {
-      toast("Resume upload isn't wired up yet — hook this button to Supabase Storage when you're ready.");
+      document.getElementById("resumeInput")?.click();
     }
   });
 });
@@ -81,9 +75,7 @@ document.getElementById("confirmLogoutBtn").addEventListener("click", async func
   window.location.href = "index.html";
 });
 
-/* =========================
-   DATA
-========================= */
+
 let jobs = [];
 let savedJobIds = [];
 let applications = [];
@@ -120,9 +112,7 @@ async function loadAll() {
   renderConversationList();
 }
 
-/* =========================
-   RENDER: JOB CARD
-========================= */
+
 function jobCard(job) {
   const saved = savedJobIds.includes(job.id);
   const applied = hasApplied(job.id);
@@ -211,9 +201,7 @@ function renderAll() {
   renderStats();
 }
 
-/* =========================
-   SAVE / APPLY ACTIONS
-========================= */
+
 async function toggleSave(jobId) {
   if (savedJobIds.includes(jobId)) {
     await supabaseClient.from("saved_jobs").delete().eq("user_id", SEEKER_PROFILE.id).eq("job_id", jobId);
@@ -276,14 +264,14 @@ if (applyForm) {
   });
 }
 
-/* =========================
-   PROFILE FORM
-========================= */
+
+/* =========================================================
+   Profile view + UPLOAD handlers (avatar + resume)
+   ========================================================= */
 function fillProfileView() {
   const p = SEEKER_PROFILE;
   document.getElementById("profileFullName").textContent = p.full_name || p.username;
   document.getElementById("profileHeadline").textContent = p.headline || "Job Seeker";
-  document.getElementById("profileLogo").textContent = (p.full_name || p.username).split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
   document.getElementById("profileAddress").textContent = p.bio ? p.bio.slice(0, 40) : "—";
   document.getElementById("profilePhone").textContent = p.phone || "—";
   document.getElementById("profileEmail").textContent = p.email;
@@ -300,6 +288,177 @@ function fillProfileView() {
   document.getElementById("formPhone").value = p.phone || "";
   document.getElementById("formEmail").value = p.email;
   document.getElementById("formSkills").value = p.skills || "";
+
+  refreshAvatar();
+  refreshResume();
+}
+
+function refreshAvatar() {
+  const img  = document.getElementById("profileLogoImg");
+  const init = document.getElementById("profileLogoInit");
+  const name = (SEEKER_PROFILE.full_name || SEEKER_PROFILE.username || "Job Seeker").trim();
+  if (SEEKER_PROFILE.avatar_url) {
+    img.src = SEEKER_PROFILE.avatar_url;
+    img.style.display = "block";
+    init.style.display = "none";
+  } else {
+    img.removeAttribute("src");
+    img.style.display = "none";
+    init.textContent = name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "JD";
+    init.style.display = "";
+  }
+}
+
+function refreshResume() {
+  const remove = document.getElementById("resumeRemoveBtn");
+  const link   = document.getElementById("resumeLink");
+  const a      = document.getElementById("resumeAnchor");
+  const lbl    = document.getElementById("resumeZoneLabel");
+  if (SEEKER_PROFILE.resume_url) {
+    if (remove) remove.style.display = "";
+    if (link)   link.style.display = "";
+    if (a) { a.href = SEEKER_PROFILE.resume_url; a.textContent = SEEKER_PROFILE.resume_name || "resume"; }
+    if (lbl)    lbl.textContent = "Current Resume";
+  } else {
+    if (remove) remove.style.display = "none";
+    if (link)   link.style.display = "none";
+    if (lbl)    lbl.textContent = "Upload Resume / CV";
+  }
+}
+
+function setResumeStatus(msg, cls) {
+  const s = document.getElementById("resumeStatus");
+  if (!s) return;
+  s.textContent = msg;
+  s.className = "upload-zone-status " + (cls || "");
+  s.style.display = msg ? "" : "none";
+}
+
+function setResumeProgress(visible, p) {
+  const wrap = document.getElementById("resumeProgress");
+  if (!wrap) return;
+  wrap.style.display = visible ? "" : "none";
+  const bar = wrap.firstElementChild;
+  if (bar) bar.style.width = (p == null ? 0 : p) + "%";
+}
+
+async function handleAvatar(file) {
+  if (!file) return;
+  const err = window.validateUpload(file, "image");
+  if (err) { toast(err, "error"); return; }
+  const sniff = await window.sniffFile(file);
+  if (sniff !== "image/jpeg" && sniff !== "image/png" && sniff !== "image/webp") {
+    toast("File contents don't look like a JPG/PNG/WEBP image.", "error");
+    return;
+  }
+  const btn = document.getElementById("avatarPickBtn");
+  btn.disabled = true;
+  try {
+    const { url } = await window.uploadWhFile(file, "avatar", SEEKER_PROFILE.id);
+    const { error } = await supabaseClient.from("profiles")
+      .update({ avatar_url: url })
+      .eq("id", SEEKER_PROFILE.id);
+    if (error) throw error;
+    SEEKER_PROFILE.avatar_url = url;
+    refreshAvatar();
+    toast("Profile picture updated.");
+  } catch (e) {
+    toast("Upload failed: " + (e.message || e), "error");
+  } finally { btn.disabled = false; }
+}
+
+async function handleResume(file) {
+  if (!file) return;
+  const err = window.validateUpload(file, "doc");
+  if (err) { setResumeStatus(err, "error"); toast(err, "error"); return; }
+  const remove = document.getElementById("resumeRemoveBtn");
+  remove.disabled = true;
+  setResumeStatus("Uploading…", "ok");
+  setResumeProgress(true, 25);
+  try {
+    setResumeProgress(true, 60);
+    const { url } = await window.uploadWhFile(file, "resume", SEEKER_PROFILE.id);
+    setResumeProgress(true, 85);
+    const { error } = await supabaseClient.from("profiles")
+      .update({ resume_url: url, resume_name: file.name })
+      .eq("id", SEEKER_PROFILE.id);
+    if (error) throw error;
+    SEEKER_PROFILE.resume_url = url;
+    SEEKER_PROFILE.resume_name = file.name;
+    setResumeProgress(true, 100);
+    refreshResume();
+    setResumeStatus("Resume uploaded!", "ok");
+    toast("Resume uploaded.");
+  } catch (e) {
+    setResumeStatus("Upload failed: " + (e.message || e), "error");
+    toast("Upload failed: " + (e.message || e), "error");
+  } finally {
+    setTimeout(() => setResumeProgress(false, 0), 600);
+    setTimeout(() => setResumeStatus("", ""), 4000);
+    remove.disabled = false;
+  }
+}
+
+async function removeResume() {
+  if (!confirm("Remove your current resume?")) return;
+  const remove = document.getElementById("resumeRemoveBtn");
+  remove.disabled = true;
+  try {
+    await window.deleteWhFile(SEEKER_PROFILE.resume_url);
+    const { error } = await supabaseClient.from("profiles")
+      .update({ resume_url: null, resume_name: null })
+      .eq("id", SEEKER_PROFILE.id);
+    if (error) throw error;
+    SEEKER_PROFILE.resume_url = null;
+    SEEKER_PROFILE.resume_name = null;
+    refreshResume();
+    setResumeStatus("Resume removed.", "ok");
+    toast("Resume removed.");
+  } catch (e) {
+    setResumeStatus("Could not remove: " + e.message, "error");
+    toast("Could not remove: " + e.message, "error");
+  } finally { remove.disabled = false; }
+}
+
+function wireSeekUploads() {
+  const avatarInput = document.getElementById("avatarInput");
+  const avatarPick  = document.getElementById("avatarPickBtn");
+  const avatarBox   = document.getElementById("profileLogo");
+
+  if (avatarPick) avatarPick.addEventListener("click", e => { e.stopPropagation(); avatarInput.click(); });
+  if (avatarBox)  avatarBox.addEventListener("click", e => {
+    if (e.target.closest(".profile-logo-edit")) avatarInput.click();
+  });
+  if (avatarInput) avatarInput.addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0];
+    if (f) handleAvatar(f);
+    e.target.value = "";
+  });
+
+  const resumeInput = document.getElementById("resumeInput");
+  const resumePick  = document.getElementById("resumePickBtn");
+  const resumeRem   = document.getElementById("resumeRemoveBtn");
+  if (resumePick)  resumePick.addEventListener("click", e => { e.stopPropagation(); resumeInput.click(); });
+  if (resumeInput) resumeInput.addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0];
+    if (f) handleResume(f);
+    e.target.value = "";
+  });
+  if (resumeRem)   resumeRem.addEventListener("click", removeResume);
+
+  const zone = document.getElementById("resumeZone");
+  if (zone) {
+    zone.addEventListener("click", e => {
+      if (e.target.id === "resumeRemoveBtn") return;
+      resumeInput.click();
+    });
+    ["dragenter","dragover"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add("dragging"); }));
+    ["dragleave","drop"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove("dragging"); }));
+    zone.addEventListener("drop", e => {
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) handleResume(f);
+    });
+  }
 }
 
 const profileForm = document.getElementById("profileForm");
@@ -321,9 +480,6 @@ if (profileForm) {
   });
 }
 
-/* =========================
-   SEARCH / FILTERS
-========================= */
 function applyJobsFilter() {
   const searchEl = document.getElementById("jobsSearch");
   const categoryEl = document.getElementById("jobsCategory");
@@ -359,9 +515,7 @@ if (topSearch) {
   });
 }
 
-/* =========================
-   MESSAGES (real, job seeker <-> employer)
-========================= */
+
 function renderConversationList() {
   const list = document.getElementById("conversationList");
   if (!list) return;
@@ -471,10 +625,9 @@ async function pollMessages() {
 }
 setInterval(pollMessages, 4000);
 
-/* =========================
-   INIT
-========================= */
+
 fillProfileView();
+wireSeekUploads();
 await loadAll();
 
 });
